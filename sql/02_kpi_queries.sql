@@ -19,3 +19,12 @@ SELECT
 FROM support_tickets
 GROUP BY channel
 ORDER BY ticket_count DESC;
+
+-- 3. Average resolution time by agent
+SELECT
+    agent,
+    COUNT(*)                          AS ticket_count,
+    ROUND(AVG(resolution_time_hours), 2) AS avg_resolution_hours
+FROM support_tickets
+GROUP BY agent
+ORDER BY avg_resolution_hours ASC;
