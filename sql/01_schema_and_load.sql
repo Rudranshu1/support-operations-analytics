@@ -36,7 +36,7 @@ LOAD DATA LOCAL INFILE 'D:/Projects/MyGitHubProject/Project1-Rebuild/data/suppor
 INTO TABLE support_tickets
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'  -- file is Windows CRLF; matching this exactly avoids a stray \r landing on the last column (status)
 IGNORE 1 ROWS
 (ticket_id, created_date, @resolved_date, channel, category, priority, agent,
  resolution_time_hours, @satisfaction_score, status)
