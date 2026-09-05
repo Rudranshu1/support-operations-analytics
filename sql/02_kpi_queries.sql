@@ -38,3 +38,40 @@ ORDER BY avg_resolution_hours ASC;
 SELECT COUNT(*) AS unassigned_agent_tickets
 FROM support_tickets
 WHERE agent = 'Unknown';
+
+-- 4. Average satisfaction score by category
+-- COUNT(satisfaction_score) only counts non-NULL responses, so we can see
+-- the response rate alongside the score itself instead of hiding it.
+SELECT
+    category,
+    COUNT(*)                          AS ticket_count,
+    COUNT(satisfaction_score)         AS responses,
+    ROUND(AVG(satisfaction_score), 2) AS avg_satisfaction
+FROM support_tickets
+GROUP BY category
+ORDER BY avg_satisfaction DESC;
+
+-- 5. Average resolution time by priority (SLA sanity check -
+-- Urgent should resolve fastest, Low slowest)
+SELECT
+    priority,
+    COUNT(*)                             AS ticket_count,
+    ROUND(AVG(resolution_time_hours), 2) AS avg_resolution_hours
+FROM support_tickets
+GROUP BY priority
+ORDER BY FIELD(priority, 'Urgent', 'High', 'Medium', 'Low');
+
+-- 6. Monthly ticket volume trend
+SELECT
+    DATE_FORMAT(created_date, '%Y-%m') AS month,
+    COUNT(*)                           AS ticket_count
+FROM support_tickets
+GROUP BY month
+ORDER BY month;
+
+-- 7. Reopened ticket rate (quality/rework metric)
+SELECT
+    COUNT(*)                                          AS total_tickets,
+    SUM(status = 'Reopened')                           AS reopened_count,
+    ROUND(100.0 * SUM(status = 'Reopened') / COUNT(*), 2) AS reopened_rate_pct
+FROM support_tickets;
