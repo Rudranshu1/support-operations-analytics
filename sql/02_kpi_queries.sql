@@ -75,3 +75,4 @@ SELECT
     SUM(status = 'Reopened')                           AS reopened_count,
     ROUND(100.0 * SUM(status = 'Reopened') / COUNT(*), 2) AS reopened_rate_pct
 FROM support_tickets;
+
